@@ -1,0 +1,235 @@
+<link rel="stylesheet" href="{{ 'account.css' | asset_url }}" />
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="max-w-[462px] w-full mx-auto px-4" data-section-id="{{ section.id }}">
+  <div id="recover" class="scroll-m-80">
+    <h1 class="capitalize text-center mb-3 font-semibold text-grey-900 text-h4 lg:text-h3">{{ 'customer.recover_password.title' | t }}</h1>
+    <p class="block text-sm leading-5 lg:text-base lg:leading-6 mb-8 font-light text-grey-700 text-center">{{ 'customer.recover_password.subtext' | t }}</p>
+    {%- form 'recover_customer_password' -%}
+      {% assign recover_success = form.posted_successfully? %}
+      {%- if recover_success == true -%}
+        <span class="block text-xs mb-4 font-light text-success" tabindex="-1" autofocus>{{ 'customer.recover_password.success' | t }}</span>
+      {%- endif -%}
+      <div class="w-full mb-8 lg:mb-6">
+        <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="RecoverEmail">{{ 'customer.login_page.email' | t }}</label>
+        <input
+          class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+          type="email"
+          value=""
+          name="email"
+          id="RecoverEmail"
+          autocorrect="off"
+          autocapitalize="off"
+          placeholder="{{ 'customer.login_page.email_placeholder' | t }}"
+          autocomplete="email"
+          required
+          {% if form.errors %}
+          aria-invalid="true"
+          aria-describedby="RecoverEmail-email-error"
+          autofocus
+          {% endif %}
+        >
+        {%- if form.errors -%}
+          <span id="RecoverEmail-email-error" class="text-xs text-error block mt-4">{{ form.errors.messages['form'] }}</span>
+        {%- endif -%}
+      </div>
+
+      <button type="submit" class="btn text-center w-full py-4 px-6 lg:px-8 !uppercase text-base lg:leading-none mb-3 lg:mb-4">{{ 'customer.login_page.submit' | t }}</button>
+      <a href="#login" class="btn btn-2 text-center w-full py-4 px-6 lg:px-8 !uppercase text-base lg:leading-none">{{ 'customer.reset_password.back_to_login' | t }}</a>
+    {%- endform -%}
+  </div>
+
+  <div id="login" class="scroll-m-80">
+    <div class="grid gap-1 lg:gap-2 items-center rounded-xl grid-cols-2 bg-[#F6F6F6] p-1 lg:p-2 w-full mb-6 lg:mb-8">
+      {% if template.name == "login" %}
+        <div class="bg-background text-grey-800 w-full rounded-lg text-h5 lg:text-h3 py-1.5 lg:py-2.5 font-heading font-semibold text-center capitalize">
+          {{ 'customer.login_page.title' | t }}
+        </div>
+        <a href="{{ routes.account_register_url }}" class="block text-grey-400 hover:text-grey-800 hover:bg-background transition-all w-full rounded-lg text-h5 lg:text-h3 py-1.5 lg:py-2.5 font-heading font-semibold text-center capitalize">
+          {{ 'customer.register.title' | t }}
+        </a>
+      {% endif %}
+    </div>
+    <account-form class="block">
+      {%- form 'customer_login', novalidate: 'novalidate', class: 'grid' -%}
+        {%- if form.errors -%}
+          <div class="p-2 rounded-md text-error mb-2 bg-error bg-opacity-20 order-2 lg:order-1">
+            <span class="block text-sm mb-2 font-light text-error">{{ 'templates.contact.form.error_heading' | t }}</span>
+            <ul class="text-xs list-disc list-inside"> 
+              {%- for field in form.errors -%}
+                <li class="text-error">
+                  {{ form.errors.messages[field] }}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="w-full mb-4 lg:mb-5 0 order-3 lg:order-2">
+          <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="CustomerEmail">{{ 'customer.login_page.email' | t }}</label>
+          <input
+            class="border {% if form.errors contains 'email' %} border-error focus:border-error hover:border-error active:border-error{% else %} border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250{% endif %} !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+            type="email"
+            name="customer[email]"
+            id="CustomerEmail"
+            placeholder="{{ 'customer.login_page.email_placeholder' | t }}"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+            {% if form.errors contains 'form' %}
+            aria-invalid="true"
+            {% endif %}>
+        </div>
+        {%- if form.password_needed -%}
+          <div class="w-full mb-4 order-4 lg:order-3">
+            <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="CustomerPassword">{{ 'customer.login_page.password' | t }}</label>
+            <toggle-password class="relative field w-full block">
+              <input
+                class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+                type="password"
+                value=""
+                name="customer[password]"
+                id="CustomerPassword"
+                placeholder="{{ 'customer.login_page.password_placeholder' | t }}"
+                autocomplete="current-password"
+                required
+                {% if form.errors contains 'form' %}
+                aria-invalid="true"
+                {% endif %}>
+              <span class="eye absolute top-1/2 right-4 -translate-y-1/2 z-10 cursor-pointer">
+                <span class="icon-eye">{% render 'icon-eye' %}</span>
+                <span class="icon-eye-hidden">{% render 'icon-eye-hidden' %}</span>
+              </span>
+            </toggle-password>
+          </div>
+        {%- endif -%}
+
+        <div class="flex items-center flex-wrap justify-between gap-2 mb-5 lg:mb-6 order-5 lg:order-4">
+          <div class="flex items-center gap-2">
+            <label for="keep-signed" class="relative checked">
+              <input type="checkbox" class="opacity-0 invisible absolute" id="keep-signed">
+              <svg aria-hidden="true" class="icon icon-checkmark absolute w-2.5 h-2.5 top-1/2 left-2.5 -translate-x-1/2 -translate-y-1/2 opacity-0 invisible" width="0.625rem" height="0.625rem" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.5 3.5L2.83333 4.75L4.16667 6L9.5 1" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="icon-box w-5 h-5 flex-none" viewBox="0 0 18 18" fill="none">
+                <path d="M16.625 2.75C16.625 1.99061 16.0094 1.375 15.25 1.375H2.75C1.99061 1.375 1.375 1.99061 1.375 2.75V15.25C1.375 16.0094 1.99061 16.625 2.75 16.625H15.25C16.0094 16.625 16.625 16.0094 16.625 15.25V2.75Z" stroke="currentColor" stroke-linejoin="round"/>
+              </svg>
+            </label>
+            <label class="block cursor-pointer select-none text-sm leading-5 font-light text-grey-700" for="keep-signed">{{ 'customer.login_page.keep_me_signed_in' | t }}</label>
+          </div>
+          <a href="#recover" class="block text-sm text-grey-700 hover:text-grey-900 leading-2 font-medium">{{ 'customer.login_page.forgot_password' | t }}</a>
+        </div>
+
+        <button type="submit" class="btn w-full py-4 px-6 lg:px-8 !uppercase text-base leading-none mb-3 order-6 lg:order-5">{{ 'customer.login_page.title' | t }}</button>
+
+        <span class="account-description block text-xs mb-6 lg:mb-8 font-light text-grey-700 text-center order-7 lg:order-6 max-w-[270px] mx-auto lg:max-w-full">{{ 'customer.login_page.introduce_html' | t:sitename: shop.name }}</span>
+
+        <div class="order-1 lg:order-7 grid gap-4 lg:gap-5 mb-6 lg:mb-8">
+          <div class="relative before:w-full before:border-grey-100 before:border-t before:block before:absolute before:top-1/2 before:-translate-y-1/2 before:h-0.25 before:rounded-lg order-2 lg:order-1">
+            <span class="text-grey-400 text-center text-base leading-4 font-normal block bg-background px-2 z-10 w-fit mx-auto relative">{{ 'customer.login_page.title_login_socials' | t }}</span>
+          </div>
+          <div class="order-1 lg:order-2 flex justify-center flex-wrap items-center gap-3">
+            <a href="#logingoogle" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+              {% render 'icon-login-google', class: 'w-6 h-6' %}
+            </a>
+            <a href="#loginfacebook" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+              {% render 'icon-login-facebook', class: 'w-6 h-6' %}
+            </a>
+            <a href="#logintwitter" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+              {% render 'icon-login-twitter', class: 'w-6 h-6' %}
+            </a>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-center text-sm text-grey-700 gap-1.5 order-8">
+          <span class="font-light leading-5">{{ 'customer.login_page.note_html' | t:sitename: shop.name }}</span>
+          <a href="{{ routes.account_register_url }}" class="underline capitalize font-medium leading-2 block">{{ 'customer.login_page.create_account' | t }}</a>
+        </div>
+      {%- endform -%}
+    </account-form>
+  </div>
+
+  {%- if shop.checkout.guest_login -%}
+    <div class="scroll-m-80 mt-4">
+      <h2 class="capitalize text-center mb-3 font-semibold text-grey-900 text-h4 lg:text-h3">{{ 'customer.login_page.guest_title' | t }}</h2>
+      {%- form 'guest_login' -%}
+        <button class="btn w-full py-4 px-6 lg:px-8 !uppercase text-base leading-none">
+          {{ 'customer.login_page.guest_continue' | t }}
+        </button>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% capture src_url %}{{ 'account.js' | asset_url }}{% endcapture %}
+{% render 'atom_script', src: src_url, priority: 'normal', type: "defer" %}
+{% schema %}
+  {
+    "name": "Login",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Padding mobile"
+      },
+      {
+        "type": "range",
+        "id": "padding_top_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      },
+      {
+        "type": "header",
+        "content": "Padding desktop"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
+{% endschema %}

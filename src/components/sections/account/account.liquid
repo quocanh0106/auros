@@ -1,0 +1,92 @@
+<link rel="stylesheet" href="{{ 'account.css' | asset_url }}" />
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-width">
+  {%- assign pageUrl = content_for_header | split: '"pageurl":"' | last | split: '"' | first | split: '.myshopify.com' | last | replace: '\/', '/' | replace: '%20', ' ' | replace: '\u0026', '&' -%}
+  <div class="grid grid-cols-1 lg:grid-cols-6 gap-3 md:gap-4">
+    {% render 'account-menu', pageUrl: pageUrl %}
+    <div class="w-full col-span-1 lg:col-span-5 lg:rounded-2xl py-5 md:p-8 lg:py-10 lg:px-12 md:shadow-megamenu">
+      {% if pageUrl contains '?view=orders' %}
+        {% render 'account-order' %}
+      {% elsif pageUrl contains '?view=wishlist' %}
+        {% render 'account-wishlist' %}
+      {% else %}
+        {% render 'account' %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+{% capture src_url %}{{ 'account.js' | asset_url }}{% endcapture %}
+{% render 'atom_script', src: src_url, priority: 'normal', type: "defer" %}
+
+{% schema %}
+  {
+    "name": "Account",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Padding mobile"
+      },
+      {
+        "type": "range",
+        "id": "padding_top_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      },
+      {
+        "type": "header",
+        "content": "Padding desktop"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,236 @@
+<link rel="stylesheet" href="{{ 'account.css' | asset_url }}" />
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-width">
+  {%- assign pageUrl = content_for_header | split: '"pageurl":"' | last | split: '"' | first | split: '.myshopify.com' | last | replace: '\/', '/' | replace: '%20', ' ' | replace: '\u0026', '&' -%}
+  <div class="grid grid-cols-1 lg:grid-cols-6 gap-3 md:gap-4">
+    {% render 'account-menu', pageUrl: pageUrl %}
+    <div class="w-full col-span-1 lg:col-span-5 lg:rounded-2xl py-5 md:p-8 lg:p-10 md:shadow-megamenu">
+      <div class="flex items-center mb-1 md:mb-3 lg:mb-4 gap-1">
+        <a href="{{ routes.account_url |  append: '?view=orders' }}" class="text-xs md:text-sm lg:text-base font-medium leading-3 md:leading-4 lg:leading-2 font-heading text-grey-400 hover:text-grey-700">{{ 'customer.orders.title' | t }}</a>
+        {% render 'icon-right', class: 'w-4 h-4' %}
+        <span class="text-sm md:text-base lg:text-lg !leading-2 uppercase text-grey-700 font-medium">{{ 'customer.order.title' | t:name: order.name  }}</span>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-1.5 md:gap-2 rounded-lg p-3 lg:p-4 border border-grey-100 text-xs md:text-sm lg:text-base !leading-5 text-grey-700 mb-3 md:mb-5 lg:mb-8">
+        <span class="flex items-center gap-1">
+          {% render 'icon-gps', class: 'w-4 h-4 text-grey-400' %}
+          {{ order.shipping_address.street }}
+        </span>
+        {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+        <span>{{ order.shipping_address.province }}</span>
+        {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+        <span>{{ order.shipping_address.city }}</span>
+        {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+        <span>{{ order.shipping_address.country }}</span>
+      </div>
+      
+      <table class="w-full rounded-lg overflow-hidden" role="table">
+        <thead role="rowgroup" class="hidden lg:table-row-group">
+          <tr class="text-grey-700 bg-[#FAFAFA]" role="row">
+            <th class="text-sm leading-4 font-body font-normal md:py-4 lg:p-3.5 text-left" colspan="2">{{ 'customer.order.lineitem.name' | t }}</th>
+            <th class="text-sm leading-4 font-body font-normal md:py-4 lg:py-3.5 lg:px-6 text-left">{{ 'customer.order.lineitem.tracking_code' | t }}</th>
+            <th class="text-sm leading-4 font-body font-normal md:py-4 lg:py-3.5 lg:px-6 text-left">{{ 'customer.order.lineitem.quantity' | t }}</th>
+            <th class="text-sm leading-4 font-body font-normal md:py-4 lg:py-3.5 lg:px-6 text-right">{{ 'customer.order.lineitem.unit_price' | t }}</th>
+            <th class="text-sm leading-4 font-body font-normal md:py-4 lg:py-3.5 lg:px-6 text-right">{{ 'customer.order.lineitem.amount' | t }}</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {%- for line_item in order.line_items -%}
+            {% assign greyBackground = forloop.index | modulo: 2 %}
+            <tr class="flex flex-wrap justify-end lg:table-row p-3.5 lg:p-0 relative{% if greyBackground == 0 %} bg-background lg:bg-[#FAFAFA]{% else %} bg-[#FAFAFA] lg:bg-background{% endif %}" role="row">
+              <td class="p-0 lg:py-3.5 lg:pl-3.5 text-left flex-none absolute top-3.5 left-3.5 lg:static" role="cell">
+                {%- if line_item.image -%}
+                  {% for property in line_item.properties %}
+                    {% if property.first == '_customily-thumb' %}
+                      <modal-opener class="group block w-20 h-20 md:w-26 md:h-26 lg:w-24 lg:h-24 rounded flex-none overflow-hidden relative cursor-pointer" data-id="#preview-image-{{ line_item.index | plus: 1 }}">
+                        <img
+                          class="object-cover object-center w-20 h-20 md:w-26 md:h-26 lg:w-24 lg:h-24 rounded overflow-hidden"
+                          src="{{ property.last }}"
+                          width="106"
+                          height="106"
+                          alt="{{ line_item.product.title }}"
+                          loading="lazy">
+                        <div class="absolute bottom-1 right-1 rounded flex items-center justify-center p-1 w-5 h-5 lg:w-6 lg:h-6 bg-white bg-opacity-30 group-hover:bg-opacity-100 transition-all text-grey-700">
+                          {% render 'icon-zoom', class: 'w-3 h-3 lg:w-4 lg:h-4' %}
+                        </div>
+                      </modal-opener>
+                    {% endif %}
+                    {% if property.first == '_customily-preview' %}
+                      <modal-dialog class="hidden fixed w-full h-full bg-black bg-opacity-20 top-0 left-0 z-20" id="preview-image-{{ line_item.index | plus: 1 }}">
+                        <div class="text-center p-4 lg:p-12 rounded-xl shadow-popup max-w-[calc(100vw_-_32px)] max-h-[calc(100vh_-_32px)] w-[860px] lg:overflow-auto bg-background absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2">
+                          <img
+                            src="{{ property.last }}"
+                            class="w-full h-full block object-cover leading-[0] !max-w-full !max-h-full"
+                            width="765"
+                            height="765"
+                            loading="lazy"
+                            alt="{{ line_item.product.title }}">
+                          <span class="text-grey-700 shadow-megamenu cursor-pointer bg-background w-10 h-10 flex items-center justify-center rounded-full absolute -top-3 left-1/2 -translate-x-1/2 -translate-y-full lg:top-7 lg:right-7 lg:left-auto lg:translate-y-0 lg:translate-x-0 close">
+                            {% render 'icon-close', class: 'w-6 h-6' %}
+                          </span>
+                        </div>
+                      </modal-dialog>
+                    {% endif %}
+                  {% endfor %}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'object-cover object-center w-20 h-20 md:w-26 md:h-26 lg:w-24 lg:h-24 rounded overflow-hidden' }}
+                {%- endif -%}
+              </td>
+              <td class="max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit pl-2.5 md:pl-4 lg:py-3.5 lg:px-2.5 text-left align-top leading-none mb-1.5 lg:mb-0 " role="cell">
+                <a class="text-xs leading-2 md:text-sm md:leading-2 font-normal font-heading text-grey-900 hover:text-grey-700 block" href="{{ line_item.product.url }}">{{ line_item.product.title }}</a>
+                {%- if line_item.product.has_only_default_variant == false -%}
+                  <div class="mt-1">
+                    {%- for option in line_item.options_with_values -%}
+                      <div class="flex text-grey-600 text-xs leading-5 gap-1 font-light">
+                        <dt>{{ option.name }}:</dt>
+                        <dd>{{ option.value }}</dd>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </td>
+
+              <td class="max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit text-xs leading-5 lg:text-sm text-grey-600 lg:text-grey-700 lg:leading-5 pl-2.5 md:pl-4 lg:py-3.5 lg:px-6 text-left before:content-[attr(data-label)': '] before:font-normal before:leading-6 before:no-underline before:lg:hidden mb-1.5 lg:mb-0 {% unless line_item.fulfillment.tracking_number %} hidden lg:table-cell{% endunless %}" role="cell" data-label="{{ 'customer.order.lineitem.tracking_code' | t }}">
+                {% if line_item.fulfillment.tracking_number %}
+                  <div class="inline-flex items-center justify-between">
+                    <a class="text-inherit underline truncate-line one-line overflow-hidden break-words" href="{{ line_item.fulfillment.tracking_url }}" target="_blank">
+                      {{ line_item.fulfillment.tracking_number }}
+                    </a>
+                    <copy-link href="{{ line_item.fulfillment.tracking_url }}" class="cursor-pointer"> {% render 'icon-copy', class: 'w-4 h-4 text-grey-400' %}</copy-link>
+                  </div>
+                {% endif %}
+              </td>
+
+              <td class="max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit text-xs leading-5 lg:text-sm text-grey-600 lg:text-grey-700 lg:leading-5 pl-2.5 mb-1 lg:mb-0 md:pl-4 lg:py-3.5 lg:px-6 text-left lg:text-center before:content-[attr(data-label)':'] before:lg:hidden" role="cell" data-label="{{ 'customer.order.lineitem.quantity' | t }}">
+                {{ line_item.quantity }}
+              </td>
+
+              <td class="max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit text-xs leading-5 lg:text-sm text-grey-600 lg:text-grey-700 lg:leading-5 pl-2.5 mb-1 lg:mb-0 md:pl-4 lg:py-3.5 lg:px-6 text-left lg:text-right before:content-[attr(data-label)':'] before:lg:hidden" role="cell" data-label="{{ 'customer.order.lineitem.unit_price' | t }}">
+                {{ line_item.original_price | money }}
+              </td>
+
+              <td class="max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit text-xs leading-5 lg:text-sm text-grey-600 lg:text-grey-700 lg:leading-5 pl-2.5 md:pl-4 lg:py-3.5 lg:px-6 text-left lg:text-right before:content-[attr(data-label)':'] before:lg:hidden" role="cell" data-label="{{ 'customer.order.lineitem.amount' | t }}">
+                {{ line_item.final_line_price | money }}
+              </td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+        {% for discount_application in order.discount_applications %}
+          {% unless discountSummary %}
+            {% assign discountSummary = discount_application.total_allocated_amount %}
+          {% else %}
+            {% assign discountSummary = discountSummary | plus: discount_application.total_allocated_amount %}
+          {% endunless %}
+        {% endfor %}
+        <tfoot role="rowgroup" class="block lg:table-row-group max-w-[calc(100%_-_80px)] md:max-w-[calc(100%_-_104px)] lg:max-w-full w-full lg:w-fit ml-auto pl-3.5">
+          <tr class="w-full flex justify-between items-center md:table-row">
+            <td colspan="3" class="hidden lg:table-cell"></td>
+            <td class="text-sm leading-4 font-body font-normal px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6 text-left" colspan="2">Subtotal</td>
+            <td class="text-sm text-grey-700 leading-5 font-light text-right px-2 py-2.5 md:py-4 md:px-4 lg:py-3.5 lg:px-6">{{ order.subtotal_price | money }}</td>
+          </tr>
+          <tr class="w-full flex justify-between items-center md:table-row">
+            <td colspan="3" class="hidden lg:table-cell"></td>
+            <td class="text-sm leading-4 font-body font-normal px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6 text-left" colspan="2">Shipping</td>
+            {% if order.shipping_price == 0 %}
+              <td class="text-sm text-grey-700 leading-5 font-light text-right px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6">free</td>
+            {% else %}
+              <td class="text-sm text-grey-700 leading-5 font-light text-right px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6">{{ order.shipping_price | money }}</td>
+            {% endif %}
+          </tr>
+          {% if discountSummary %}
+            <tr class="w-full flex justify-between items-center md:table-row">
+              <td colspan="3" class="hidden lg:table-cell"></td>
+              <td class="text-sm leading-4 font-body font-normal px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6 text-left" colspan="2">Discount</td>
+              <td class="text-sm text-grey-700 leading-5 font-light text-right px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6">-{{ discountSummary | money }}</td>
+            </tr>
+          {% endif %}
+          <tr class="w-full flex justify-between items-center md:table-row">
+            <td colspan="3" class="hidden lg:table-cell"></td>
+            <td class="text-sm leading-4 font-body font-normal px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6 text-left" colspan="2">Total</td>
+            <td class="text-sm text-grey-700 leading-5 font-light text-right px-2 py-2.5 md:py-3 md:px-4 lg:py-3.5 lg:px-6">{{ order.total_price | money }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <a href="{{ routes.account_url |  append: '?view=orders' }}" class="w-fit ml-auto mt-5 lg:mt-8 flex items-center gap-1 font-bold font-heading text-sm leading-none test-grey-800 hover:text-grey-600 pr-3 md:pr-0 lg:pr-6">
+        {% render 'icon-prev', class: 'w-5 h-5' %}
+        {{ 'customer.order.backtoorder' | t }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+{% capture src_url %}{{ 'account.js' | asset_url }}{% endcapture %}
+{% render 'atom_script', src: src_url, priority: 'normal', type: "defer" %}
+
+
+{% schema %}
+  {
+    "name": "Order",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Padding mobile"
+      },
+      {
+        "type": "range",
+        "id": "padding_top_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      },
+      {
+        "type": "header",
+        "content": "Padding desktop"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
+{% endschema %}

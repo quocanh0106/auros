@@ -1,0 +1,189 @@
+<link rel="stylesheet" href="{{ 'account.css' | asset_url }}" />
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-width">
+  <div class="grid grid-cols-1 lg:grid-cols-6 gap-4">
+    {% render 'account-menu' %}
+    <div class="w-full col-span-1 lg:col-span-5 lg:rounded-2xl lg:py-10 lg:px-12 md:shadow-megamenu">
+      {%- paginate customer.addresses by 5 -%}
+        <div class="flex items-center justify-between gap-2 mb-5 lg:mb-4">
+          <span class="text-4 font-heading font-semibold capitalize text-grey-800">{{ 'customer.addresses.address_list' | t }}</span>
+          <modal-opener class="inline-block" data-id="#address-add-new">
+            <span class="flex items-center gap-1 text-grey-800 hover:text-grey-600 transition-all cursor-pointer">{% render 'icon-plus-2', class: 'w-5 h-5' %}{{ 'customer.addresses.add' | t }}</span>
+          </modal-opener>
+          <modal-dialog class="hidden fixed w-full h-full bg-black bg-opacity-20 top-0 left-0 z-20" id="address-add-new">
+            <div class="p-4 lg:p-10 rounded-xl shadow-popup max-w-[calc(100vw_-_32px)] max-h-[calc(100vh_-_32px)] w-full md:w-[400px] lg:w-[572px] overflow-auto bg-background absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2">
+              {% render 'account-address-form', type: 'new' %}  
+              <span class="text-grey-700 shadow-megamenu cursor-pointer bg-background w-10 h-10 flex items-center justify-center rounded-full absolute top-3 right-3 lg:top-5 lg:right-5 close">
+                {% render 'icon-close', class: 'w-6 h-6' %}
+              </span>
+            </div>
+          </modal-dialog>
+        </div>
+        <div class="address-list grid grid-cols-1 gap-2">
+          {% if customer.default_address %}
+            <div class="p-4 rounded-lg border border-solid border-grey-100 w-full flex items-start justify-between gap-1">
+              <div class="grid gap-2">
+                <div class="flex items-center gap-4">
+                  <span class="text-grey-700 text-base leading-4 font-normal">{{ customer.default_address.address1 }}{% if customer.default_address.city %}, {{ customer.default_address.city }}{% endif %}
+                    {% if customer.default_address.country %}, {{ customer.default_address.country }}{% endif %}
+                  </span>
+                  <span class="text-grey-500 text-xs capitalize font-normal leading-6 bg-[#FAFAFA] py-0.5 px-2.5 rounded">
+                    {{ 'customer.addresses.default_address_label' | t }}
+                  </span>
+                </div>
+                {% assign postcodeText = 'customer.addresses.placehoder_postcode' | t %}
+                <div class="flex items-center gap-2 text-grey-500 text-sm leading-5 font-light">
+                  {{ customer.default_address.name }}
+                  {% if customer.default_address.phone != blank %}
+                    {% if customer.default_address.name != blank %}
+                      {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+                    {% endif %}
+                    {{ customer.default_address.phone }}
+                  {% endif %}
+                  {% if customer.default_address.zip != blank %}
+                    {% if customer.default_address.phone != blank or customer.default_address.name != blank %}
+                      {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+                    {% endif %}
+                    {{ customer.default_address.zip | prepend: ": " | prepend: postcodeText }}
+                  {% endif %}
+                </div>
+              </div>
+              <modal-opener data-id="#adresss-1" class="block w-fit font-heading font-bold text-sm leading-4 text-grey-700 hover:text-grey-900 capitalize cursor-pointer">
+                {{ 'customer.addresses.edit' | t }}
+              </modal-opener>
+              <modal-dialog class="hidden fixed w-full h-full bg-black bg-opacity-20 top-0 left-0 z-20" id="adresss-1">
+                <div class="p-4 lg:p-10 rounded-xl shadow-popup max-w-[calc(100vw_-_32px)] max-h-[calc(100vh_-_32px)] w-full md:w-[400px] lg:w-[572px] overflow-auto bg-background absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2">
+                  {% render 'account-address-form', address: customer.default_address, default_address: true %}  
+                  <span class="text-grey-700 shadow-megamenu cursor-pointer bg-background w-10 h-10 flex items-center justify-center rounded-full absolute top-3 right-3 lg:top-5 lg:right-5 close">
+                    {% render 'icon-close', class: 'w-6 h-6' %}
+                  </span>
+                </div>
+              </modal-dialog>
+            </div>
+          {% endif %}
+          {% for address in customer.addresses %}
+            {% unless address == customer.default_address %}
+              <div class="p-4 rounded-lg border border-solid border-grey-100 w-full flex items-start justify-between gap-1">
+                <div class="grid gap-2">
+                  <div class="flex items-center gap-4">
+                    {% if address.address1 %}
+                      <span class="text-grey-700 text-base leading-4 font-normal">{{ address.address1 }}</span>
+                    {% endif %}
+                    {% if address == customer.default_address %}
+                      <span class="text-grey-500 text-xs capitalize font-normal leading-6 bg-[#FAFAFA] py-0.5 px-2.5 rounded">
+                        {{ 'customer.addresses.default_address_label' | t }}
+                      </span>
+                    {% endif %}
+                  </div>
+                  <div class="flex items-center gap-2 text-grey-500 text-sm leading-5 font-light">
+                    {{ address.name }}
+                    {% if address.phone != blank %}
+                      {% if address.name != blank %}
+                        {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+                      {% endif %}
+                      {{ address.phone }}
+                    {% endif %}
+                    {% if address.zip != blank %}
+                      {% if address.phone != blank or address.name != blank %}
+                        {% render 'icon-dot', class: 'w-1 h-1 text-grey-100' %}
+                      {% endif %}
+                      {{ address.zip | prepend: ": " | prepend: postcodeText }}
+                    {% endif %}
+                  </div>
+                </div>
+                <modal-opener data-id="#address-{{ forloop.index | plus: 1 }}" class="block w-fit font-heading font-bold text-sm leading-4 text-grey-700 hover:text-grey-900 capitalize cursor-pointer">
+                  {{ 'customer.addresses.edit' | t }}
+                </modal-opener>
+                <modal-dialog class="hidden fixed w-full h-full bg-black bg-opacity-20 top-0 left-0 z-20" id="address-{{ forloop.index | plus: 1 }}">
+                  <div class="p-4 lg:p-10 rounded-xl shadow-popup max-w-[calc(100vw_-_32px)] max-h-[calc(100vh_-_32px)] w-full md:w-[400px] lg:w-[572px] overflow-auto bg-background absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2">
+                    {% render 'account-address-form', address: address %}    
+                    <span class="text-grey-700 shadow-megamenu cursor-pointer bg-background w-10 h-10 flex items-center justify-center rounded-full absolute top-3 right-3 lg:top-5 lg:right-5 close">
+                      {% render 'icon-close', class: 'w-6 h-6' %}
+                    </span>
+                  </div>
+                </modal-dialog>
+              </div>
+            {% endunless %}
+          {% endfor %}
+        </div>
+        {% render 'pagination', paginate: paginate %}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+{% capture src_url %}{{ 'account.js' | asset_url }}{% endcapture %}
+{% render 'atom_script', src: src_url, priority: 'normal', type: "defer" %}
+<script>window.onload = () => {typeof CustomerAddresses !== 'undefined' && new CustomerAddresses()}</script>
+
+{% schema %}
+  {
+    "name": "Address",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Padding mobile"
+      },
+      {
+        "type": "range",
+        "id": "padding_top_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom_mb",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      },
+      {
+        "type": "header",
+        "content": "Padding desktop"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ]
+  }
+{% endschema %}

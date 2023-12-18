@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "login",
+      "settings": {
+        "note": "By logging in, you agree to Personal House's <a href=\"\/pages\/privacy-policy\">Privacy Policy<\/a> and <a href=\"\/pages\/terms-of-service\">Terms of Use<\/a>.",
+        "padding_top_mb": 128,
+        "padding_bottom_mb": 128,
+        "padding_top": 176,
+        "padding_bottom": 176
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

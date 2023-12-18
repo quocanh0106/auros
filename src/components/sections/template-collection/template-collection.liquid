@@ -1,0 +1,41 @@
+<div class="px-4 py-8">
+  {% paginate collection.products by section.settings.number_of_products_per_page %}
+  <div class="bg-white">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-medium sm:px-6 lg:px-8">
+      <div class="text-center">
+        <a
+          href="{{ routes.collections_url }}"
+          class="block my-4 text-base text-center text-copyColor hover:underline"
+          >Go back to collections</a
+        >
+        <h2
+          class="text-base font-semibold text-secondaryColor tracking-wide uppercase"
+        >
+          Category
+        </h2>
+        <p
+          class="mt-1 text-4xl font-extrabold text-headerColor sm:text-5xl sm:tracking-tight lg:text-6xl"
+        >
+          {{ collection.title }}
+        </p>
+        <div class="max-w-xl mt-5 mx-auto text-xl text-copyColor">
+          {{ collection.body_html }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto">
+    <div
+      class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
+    >
+      {% for product in collection.products %} {%- render 'product-card',
+      product: product -%} {%- else -%}
+      <p>There are no products inside this collection</p>
+      {% endfor %}
+    </div>
+  </div>
+  {%- render 'pagination', pagination: paginate -%} {% endpaginate %}
+</div>
+
+{% schema %} { "name": "template-collection", "settings": [ { "type": "number",
+"id": "number_of_products_per_page", "default": 6, "label": "Number of products shown per page" } ] } {% endschema %}

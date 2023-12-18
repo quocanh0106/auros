@@ -1,0 +1,30 @@
+{% comment %}
+  ------------- ATOM !DO NOT EDIT! --------------
+  Author: Anden
+  Expected props:
+  - type: async | defer
+  - priority: important | normal
+  - src: url
+{% endcomment %}
+{% if priority == "important" %}
+  <script>
+    // Create generic <script> in the <head> of the page to load the asset.
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = '{{ src }}';
+    // Create a preload <link> in the <head> of the page for critical load.
+    var preload = document.createElement('link')
+    preload.rel="preload"
+    preload.href="{{ src }}"
+    preload.as="script"
+    document.head.appendChild(preload);
+    document.head.appendChild(script);
+  </script>
+{% else %}
+  {% comment %} Async of Defer loading types {% endcomment %}
+  {% if type == 'defer' %}
+    <script src='{{ src }}' defer='defer'></script>
+  {% elsif type == 'async' %}
+    <script src='{{ src }}' async='async'></script>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,171 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Auros",
+    "theme_version": "1.0.0",
+    "theme_author": "Anden",
+    "theme_documentation_url": "https:\/\/facebook\/quocanh1699\/",
+    "theme_support_url": "https:\/\/facebook\/quocanh1699\/"
+  },
+  {
+    "name": "General settings",
+    "settings": [
+      {
+        "type": "select",
+        "id": "country",
+        "label": "Country",
+        "default": "US",
+        "options": [
+          {
+            "value": "US",
+            "label": "United States"
+          },
+          {
+            "value": "UK",
+            "label": "United Kingdom"
+          },
+          {
+            "value": "FR",
+            "label": "France"
+          },
+          {
+            "value": "Ge",
+            "label": "Germany"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 250,
+        "step": 10,
+        "default": 100,
+        "unit": "px",
+        "label": "Custom logo width"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_mb",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width_mb",
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "default": 100,
+        "unit": "px",
+        "label": "Custom logo width"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Heading font"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font_light",
+        "default": "nunito_n3",
+        "label": "Font heading light"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "default": "nunito_n4",
+        "label": "Font heading normal"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font_medium",
+        "default": "nunito_n4",
+        "label": "Font heading medium"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font_semibold",
+        "default": "nunito_n6",
+        "label": "Font heading semibold"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font_bold",
+        "default": "nunito_n7",
+        "label": "Font heading bold"
+      },
+      {
+        "type": "header",
+        "content": "Body font"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font_light",
+        "default": "roboto_n3",
+        "label": "Font body light"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "default": "roboto_n4",
+        "label": "Font body normal"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font_medium",
+        "default": "roboto_n5",
+        "label": "Font body medium"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font_semibold",
+        "default": "roboto_n7",
+        "label": "Font body semibold"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font_bold",
+        "default": "roboto_n7",
+        "label": "Font body bold"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 920,
+        "max": 1920,
+        "step": 10,
+        "default": 1320,
+        "unit": "px",
+        "label": "Page width"
+      },
+      {
+        "type": "range",
+        "id": "page_width_secondary",
+        "min":876,
+        "max": 1024,
+        "step": 4,
+        "default": 876,
+        "unit": "px",
+        "label": "Page width secondary"
+      }
+    ]
+  }
+]

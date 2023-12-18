@@ -1,0 +1,234 @@
+<link rel="stylesheet" href="{{ 'account.css' | asset_url }}" />
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mb }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mb }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="max-w-[462px] w-full mx-auto px-4" data-section-id="{{ section.id }}">
+  <div class="grid gap-1 lg:gap-2 items-center rounded-xl grid-cols-2 bg-[#F6F6F6] p-1 lg:p-2 w-full mb-6 lg:mb-8">
+    <a href="{{ routes.account_login_url }}" class="block text-grey-400 hover:text-grey-800 hover:bg-background transition-all w-full rounded-lg text-h5 lg:text-h3 py-1.5 lg:py-2.5 font-heading font-semibold text-center capitalize">
+      {{ 'customer.login_page.title' | t }}
+    </a>
+    <div class="bg-background text-grey-800 w-full rounded-lg text-h5 lg:text-h3 py-1.5 lg:py-2.5 font-heading font-semibold text-center capitalize">
+      {{ 'customer.register.title' | t }}
+    </div>
+  </div>
+  <account-form class="block">
+    {%- form 'create_customer', novalidate: 'novalidate', class: 'flex flex-wrap' -%}
+      {%- if form.errors -%}
+        <div class="p-2 rounded-md text-error mb-2 bg-error bg-opacity-20">
+          <span class="text-sm text-error">{{ 'templates.contact.form.error_heading' | t }}</span>
+          <ul class="text-xs list-disc list-inside"> 
+            {%- for field in form.errors -%}
+              <li class="text-error">
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  <a href="#RegisterForm-{{ field }}" class="text-error hover:text-opacity-70">
+                    {{ form.errors.translated_fields[field] | capitalize }}
+                    {{ form.errors.messages[field] }}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      <div class="w-full mb-4 max-w-1/2 pr-1.5">    
+        <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="RegisterForm-FirstName">
+          {{ 'customer.register.first_name' | t }}
+        </label>  
+        <input
+          class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+          type="text"
+          name="customer[first_name]"
+          id="RegisterForm-FirstName"
+          placeholder="{{ 'customer.register.first_name_placeholder' | t }}"
+          {% if form.first_name %}value="{{ form.first_name }}"{% endif %}
+          autocomplete="given-name"
+        >
+      </div>
+      <div class="w-full mb-4 max-w-1/2 pl-1.5">
+        <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="RegisterForm-LastName">
+          {{ 'customer.register.last_name' | t }}
+        </label>
+        <input
+          class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+          type="text"
+          name="customer[last_name]"
+          placeholder="{{ 'customer.register.last_name_placeholder' | t }}"
+          id="RegisterForm-LastName"
+          {% if form.last_name %}value="{{ form.last_name }}"{% endif %}
+          autocomplete="family-name"
+        >
+      </div>
+      <div class="w-full mb-4">
+        <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="RegisterForm-email">
+          {{ 'customer.register.email' | t }}
+        </label>    
+        <input
+          class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+          type="email"
+          name="customer[email]"
+          id="RegisterForm-email"
+          placeholder="{{ 'customer.register.email_placeholder' | t }}"
+
+          {% if form.email %} value="{{ form.email }}"{% endif %}
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="email"
+          aria-required="true"
+          required
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+            aria-describedby="RegisterForm-email-error"
+          {% endif %}
+        >
+      </div>
+      {%- if form.errors contains 'email' -%}
+        <span id="RegisterForm-email-error" class="block text-xs mb-4 font-light text-error">{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
+      {%- endif -%}
+      <div class="w-full mb-4">
+        <label class="block font-heading text-base text-grey-800 leading-4 font-normal mb-2" for="RegisterForm-password">
+          {{ 'customer.register.password' | t }}
+        </label>
+        <toggle-password class="relative field w-full block">
+          <input
+            class="border border-grey-100 focus:border-grey-250 hover:border-grey-100 active:border-grey-250 !ring-0 font-light border-solid w-full text-sm leading-5 lg:text-base lg:leading-6 px-6 py-3 rounded-full"
+            type="password"
+            name="customer[password]"
+            id="RegisterForm-password"
+            placeholder="{{ 'customer.register.password_placeholder' | t }}"
+            aria-required="true"
+            required
+            {% if form.errors contains 'password' %}
+              aria-invalid="true"
+              aria-describedby="RegisterForm-password-error"
+            {% endif %}
+          >
+          <span class="eye absolute top-1/2 right-4 -translate-y-1/2 z-10 cursor-pointer">
+            <span class="icon-eye">{% render 'icon-eye' %}</span>
+            <span class="icon-eye-hidden">{% render 'icon-eye-hidden' %}</span>
+          </span>
+        </toggle-password>
+      </div>
+      {%- if form.errors contains 'password' -%}
+        <span id="RegisterForm-password-error" class="block text-xs mb-4 font-light text-error">{{ form.errors.translated_fields['password'] | capitalize }} {{ form.errors.messages['password'] }}.</span>
+      {%- endif -%}
+
+      <div class="flex items-center flex-wrap gap-2 mb-4">
+        <label for="customer[accepts_marketing]" class="relative checked">
+          <input class="opacity-0 invisible absolute" type="checkbox" id="customer[accepts_marketing]" name="customer[accepts_marketing]">
+          <svg aria-hidden="true" class="icon icon-checkmark absolute w-2.5 h-2.5 top-1/2 left-2.5 -translate-x-1/2 -translate-y-1/2 opacity-0 invisible" width="0.625rem" height="0.625rem" viewBox="0 0 11 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 3.5L2.83333 4.75L4.16667 6L9.5 1" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="icon-box w-5 h-5 flex-none" viewBox="0 0 18 18" fill="none">
+            <path d="M16.625 2.75C16.625 1.99061 16.0094 1.375 15.25 1.375H2.75C1.99061 1.375 1.375 1.99061 1.375 2.75V15.25C1.375 16.0094 1.99061 16.625 2.75 16.625H15.25C16.0094 16.625 16.625 16.0094 16.625 15.25V2.75Z" stroke="currentColor" stroke-linejoin="round"/>
+          </svg>
+        </label>
+        <label class="block cursor-pointer text-sm text-grey-700" for="customer[accepts_marketing]">{{ 'customer.register.accepts_marketing' | t: sitename: shop.name }}</label>
+      </div>
+
+      <button class="btn w-full py-4 px-6 lg:px-8 !uppercase text-base lg:leading-none mb-3">
+        {{ 'customer.register.submit' | t }}
+      </button>
+
+      <span class="account-description block text-xs font-light text-grey-700 text-center w-full">
+        {{ 'customer.register.note_html' | t }}
+      </span>
+
+      <div class="grid gap-3 lg:gap-4 mt-6 lg:mt-8 w-full">
+        <div class="flex justify-center items-center gap-1.5 text-center">
+          <span class="text-grey-700 text-sm leading-2 font-light bg-background">
+            {{ 'customer.register.have_account' | t }}
+          </span>
+          <a href="{{ routes.account_login_url }}" title="{{ 'customer.login_page.title' | t }}" class="font-medium text-sm leading-2 text-grey-700 hover:text-grey-900 capitalize">{{ 'customer.login_page.title' | t }}</a>
+        </div>
+        <div class="order-1 lg:order-2 flex justify-center flex-wrap items-center gap-3">
+          <a href="#logingoogle" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+            {% render 'icon-login-google', class: 'w-6 h-6' %}
+          </a>
+          <a href="#loginfacebook" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+            {% render 'icon-login-facebook', class: 'w-6 h-6' %}
+          </a>
+          <a href="#logintwitter" class="block border border-solid border-grey-100 p-3 bg-background hover:bg-[#FAFAFA] transition-all rounded-full">
+            {% render 'icon-login-twitter', class: 'w-6 h-6' %}
+          </a>
+        </div>
+      </div>
+    {%- endform -%}
+  </account-form>
+</div>
+
+{% capture src_url %}{{ 'account.js' | asset_url }}{% endcapture %}
+{% render 'atom_script', src: src_url, priority: 'normal', type: "defer" %}
+{% schema %}
+{
+  "name": "t:sections.main-register.name",
+  "class":"main-register-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "header",
+      "content": "Padding mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Padding desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

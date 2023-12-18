@@ -1,0 +1,260 @@
+{{ 'template-product.css' | asset_url | stylesheet_tag }}
+<script>
+  window.product = {{ product | json }}
+</script>
+<script>
+  console.log({{ product.metafields.custom.related_products }})
+</script>
+<style>
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: #000;
+    top: auto;
+    height: 20px;
+  }
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    font-size: 20px;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #000;
+  }
+</style>
+
+{%- assign selected_variant = product.selected_or_first_available_variant -%}
+
+<div class="max-w-7xl mx-auto sm:pt-16 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto lg:max-w-none">
+    <!-- Product -->
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+      <!-- Image gallery -->
+      <div class="flex flex-col-reverse" id="product-gallery"></div>
+
+      <!-- Product info -->
+      <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+        <h1 class="text-3xl font-extrabold tracking-tight text-headerColor">
+          {{ product.title }}
+        </h1>
+
+        <div class="mt-3">
+          <h2 class="sr-only">Product information</h2>
+          {%- if selected_variant.compare_at_price != blank -%}
+          <span class="text-base text-copyColor line-through">
+            {{- selected_variant.compare_at_price | money -}}
+          </span>
+          <span class="text-3xl text-headerColor">
+            {{- selected_variant.price | money -}}
+          </span>
+          {%- if selected_variant.price < selected_variant.compare_at_price -%}
+          <span
+            class="px-5 py-1 mx-4 text-sm font-bold text-white bg-red-500 rounded"
+            >Sale</span
+          >
+          {%- endif -%} {%- else -%}
+          <span class="text-3xl text-copyColor">
+            {{- selected_variant.price | money -}}
+          </span>
+          {%- endif -%}
+        </div>
+
+        <!-- Reviews -->
+        <div class="mt-3">
+          <h3 class="sr-only">Reviews</h3>
+          <div class="flex items-center">
+            <div class="flex items-center">
+              <!--
+                Heroicon name: solid/star
+
+                Active: "text-secondaryColor", Inactive: "text-gray-300"
+              -->
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-secondaryColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+
+              <!-- Heroicon name: solid/star -->
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-secondaryColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+
+              <!-- Heroicon name: solid/star -->
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-secondaryColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+
+              <!-- Heroicon name: solid/star -->
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-secondaryColor"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+
+              <!-- Heroicon name: solid/star -->
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-gray-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+            </div>
+            <p class="sr-only">4 out of 5 stars</p>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="sr-only">Description</h3>
+
+          <div class="text-base text-copyColor list-disc gap-4 flex flex-col">
+            {{ product.description }}
+          </div>
+        </div>
+
+        <form class="mt-6" method="post" action="/cart/add">
+          <input
+            type="hidden"
+            name="id"
+            value="{{ product.selected_or_first_available_variant.id }}"
+          />
+          <input
+            min="1"
+            type="number"
+            id="quantity"
+            name="quantity"
+            value="1"
+            class="hidden"
+          />
+          <!-- Colors -->
+          <div>
+            <fieldset class="my-3">
+              {%- unless product.has_only_default_variant -%}
+              <variant-selector
+                data-url="{{ product.url }}"
+                data-section="{{ section.id }}"
+              >
+                {%- for option in product.options_with_values -%}
+                <label
+                  class="text-sm textr-copyColor"
+                  for="Option-{{ section.id }}-{{ forloop.index0 }}"
+                >
+                  {{- option.name -}}
+                </label>
+                <div class="my-2">
+                  <select
+                    class="w-full px-3 py-1 border"
+                    id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                    name="options[{{ option.name | escape }}]"
+                  >
+                    {%- for value in option.values -%} {%- if
+                    option.selected_value == value -%}
+                    <option selected="selected" value="{{ value | escape }}">
+                      {{ value }}
+                    </option>
+                    {%- else -%}
+                    <option value="{{ value | escape }}">
+                      {{ value }}
+                    </option>
+                    {%- endif -%} {%- endfor -%}
+                  </select>
+                </div>
+                <script type="application/json">
+                  {{ product.variants | json }}
+                </script>
+                {%- endfor -%}
+              </variant-selector>
+              {%- endunless -%}
+            </fieldset>
+          </div>
+
+          <div class="mt-10 flex sm:flex-col1">
+            {%- if selected_variant.available == false -%}
+            <button
+              class="w-full px-6 py-4 my-2 text-white bg-gray-900 rounded-sm hover:bg-gray-700"
+              disabled
+              name="add"
+              type="submit"
+            >
+              Sold out
+            </button>
+            {%- else -%}
+            <button
+              type="submit"
+              aria-label="add to cart"
+              name="add"
+              class="max-w-xs flex-1 bg-primaryColor border border-transparent rounded-medium py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 sm:w-full"
+            >
+              Add to bag
+            </button>
+            {%- endif -%}
+
+            <button
+              type="button"
+              class="ml-4 py-3 px-3 rounded-medium flex items-center justify-center text-gray-400 hover:bg-offBG hover:text-copyColor"
+            >
+              <!-- Heroicon name: outline/heart -->
+              <svg
+                class="h-6 w-6 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              <span class="sr-only">Add to favorites</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% capture src_url %}{{ 'template-product.js' | asset_url }}{% endcapture %} 
+{%render 'atom_script', src: src_url, priority: 'normal', type: "defer" %} 
+
+{% capture src_url %}{{ 'product-gallery.js' | asset_url }}{% endcapture %} 
+{% render 'atom_script', src: src_url, priority: 'important', type: "async" %} 
+
+{% schema %} {"name": "Product", "blocks": [] } {% endschema %}

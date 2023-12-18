@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta http-equiv="Cache-control" content="public">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" href="{{ settings.type_body_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- unless settings.type_heading_font.system? -%}
+      <link rel="preload" href="{{ settings.type_heading_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {% if settings.custom_code_header_all %}
+      {{ settings.custom_code_header_all }}
+    {% endif %}
+
+    {% if template contains 'index' %}
+      {% if settings.custom_code_header_home %}
+        {{ settings.custom_code_header_home }}
+      {% endif %}
+    {% endif %}
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: '32', height: '32' }}" />
+    {%- endif -%}
+
+    {% render 'font' %}
+    
+    <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style"/>
+    <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}" />
+
+    {%- if request.path == '/collections/all' and settings.collection_all_title != blank -%}
+      <title>{{ settings.collection_all_title }}{% if current_tags %}&ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }} {% endif %}- {{ shop.name }}</title>
+    {%- else -%}
+      <title>{{ page_title }}{% if current_tags %}&ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %} {% if current_page != 1 %} &ndash; Page {{ current_page }} {% endif %}- {{ shop.name }}</title>
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {% if page_description %}
+      {%- if current_page != 1 -%}
+        <meta name="description" content="{{ page_description | escape }} - Page {{ current_page }}">
+      {%- else -%}
+        <meta name="description" content="{{ page_description | escape }}">
+      {%- endif -%}
+    {% endif %}
+    
+
+    {% comment %} SETUP VARIANTS {% endcomment %}
+    {% style %}
+      :root {
+        --font-heading: {{ settings.type_heading_font.family }};
+        --font-body: {{ settings.type_body_font.family }};        
+        --page-width: {{ settings.page_width | plus: 100 | append: 'px' }};
+        --page-width-secondary: {{ settings.page_width_secondary | plus: 100 | append: 'px' }};
+      }
+    {% endstyle %}
+    {% comment %} END SETUP VARIANTS {% endcomment %}
+    {%- capture header_scripts -%}
+      {{ content_for_header }}
+    {%- endcapture -%}
+
+    {%- render 'header-scripts', content: header_scripts, unload_apps: true, remove_apps: remove_apps -%}
+
+    {% render 'schema' %}
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        account: '{{ routes.account_url }}',
+        accountLogout: '{{ routes.account_logout_url }}'
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+      };
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`
+      };
+
+      window.accessibilityStrings = {
+        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+        shareSuccess: `{{ 'general.share.success_message' | t }}`,
+        pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+        playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`
+      };
+      window.Shopify = {
+        ...Shopify,
+        currency_format: '{{ cart.currency.symbol }}{% raw %}{{ amount }}{% endraw %}'
+      };
+    </script>
+
+  </head>
+
+  <body id="{{ page_title | handle }}" class="template-{{ template.name | handle }}">
+    <div id="page">
+      {% section 'header' %}
+      <main id="MainContent" role="main" tabindex="-1">
+        {{ content_for_layout }}
+      </main>
+      {% section 'footer' %}
+    </div>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  </body>
+</html>

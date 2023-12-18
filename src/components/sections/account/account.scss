@@ -1,0 +1,65 @@
+toggle-password input:placeholder-shown ~ .eye {
+  @apply hidden;
+}
+
+.eye {
+  .icon-eye {
+    @apply block;
+  }
+  .icon-eye-hidden {
+    @apply hidden;
+  }
+  &.active {
+    .icon-eye {
+      @apply hidden;
+    }
+    .icon-eye-hidden {
+      @apply block;
+    }
+  }
+}
+
+.account-description {
+  a {
+    @apply font-medium underline;
+  }
+}
+
+
+#recover {
+  @apply hidden;
+}
+#recover:target {
+  @apply block;
+}
+#recover:target~#login {
+  @apply hidden;
+}
+input:checked ~ .icon-checkmark {
+  @apply opacity-100 visible text-grey-50;
+}
+input:checked ~ .icon-box {
+  @apply fill-grey-700;
+}
+.register-lastdes {
+  a {
+    @apply underline capitalize font-medium underline-offset-2 block;
+  }
+}
+
+.iti {
+  @apply w-full;
+
+  *:empty {
+    @apply block;
+  }
+  .iti__arrow {
+    @apply hidden;
+  }
+  .iti__flag-container {
+    @apply hover:!bg-transparent;
+  }
+  .iti__selected-flag {
+    @apply pl-8 pr-2.5;
+  }
+}

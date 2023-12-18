@@ -1,0 +1,11 @@
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    <img 
+      class="object-cover w-full h-full" 
+      src="{{ media | image_url: width: '240' }}" 
+      alt="{{ media.preview_image.alt }}"
+      width="240"
+      height="240"
+      loading="lazy"
+      >
+{%- endcase -%}

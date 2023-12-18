@@ -1,0 +1,70 @@
+{% comment %} schema for Collection {% endcomment %}
+{% if template contains 'collection' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ collection.title }}",
+  "description": "{{ page_description | remove: '&#39;s'  }}",
+  "url": "{{ collection.url | prepend: shop.url }}",
+  "numberOfItems": {{ collection.all_products_count }},
+  "itemListElement": [
+		{% for product in collection.products limit: 12 %}
+			{
+				"@type": "Product",
+				"name": "{{ product.title }}",
+				"url": "{{ product.url | prepend: shop.url }}",
+				"image": [
+					{% for image in product.images %}
+						"{{ image.src | img_url: 'master' }}"{% unless forloop.last == true %},{% endunless %}
+					{% endfor %}
+				],
+				"offers": {
+					"@type": "Offer",
+					"priceCurrency": "{{ shop.currency }}",
+					"price": "{{ product.price_min | money_without_currency | replace: ",", "." }}",
+					"availability": "https://schema.org/InStock",
+					"seller": {
+						"@type": "Organization",
+						"name": "{{ shop.name | capitalize }}"
+					}
+				}
+			}{% unless forloop.last == true %},{% endunless %}
+		{% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+{% if template contains 'article' %}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "NewsArticle",
+	"mainEntityOfPage": {
+		"@type": "WebPage",
+		"@id": "{{ article.url }}"
+	},
+	"headline": "{{ article.title }}",
+	"image": "{{ article.image.src | img_url: 'master' }}",
+	"datePublished": "{{ article.published_at | date: '%Y-%B-%d' }}",
+	"author": {
+		"@type": "Person",
+		"name": "{{ article.author }}"
+	},
+	"publisher": {
+		"@type": "Organization",
+		"name": "{{ shop.name | capitalize }}"
+		{% if settings.share_image %}
+		,"logo": {
+				"@type": "ImageObject",
+				"height": "{{ settings.share_image.height | json }}",
+				"url": "{{ settings.share_image | image_url: width: settings.share_image.width | prepend: "https:" | json }}",
+				"width": "{{ settings.share_image.width | json }}"
+		}
+		{% endif %}
+	},
+	"description": "{{ page_description | remove: '&#39;s'  }}"
+}
+</script>
+{% endif %}

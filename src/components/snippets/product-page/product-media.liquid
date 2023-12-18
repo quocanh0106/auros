@@ -1,0 +1,26 @@
+ <button id="tabs-2-tab-1" class="relative h-24 bg-white rounded-medium flex items-center justify-center text-sm font-medium uppercase text-headerColor cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50" aria-controls="tabs-2-panel-1" role="tab" type="button">
+    <span class="sr-only"> Angled view </span>
+    <span class="absolute inset-0 rounded-medium overflow-hidden">
+      {%- case media.media_type -%}
+        {%- when 'image' -%}
+          <img 
+            class="w-full h-full object-center object-cover" 
+            src="{{ media | image_url: width: '480' }}" 
+            alt="{{ media.preview_image.alt }}"
+            width="480"
+            height="480"
+            loading="lazy"
+            >
+        {%- when 'external_video' -%}
+          {{ media | external_video_tag: class: 'object-cover w-full h-80' }}
+        {%- when 'video' -%}
+          {{ media | video_tag: controls: true, class: 'object-cover w-full h-80' }}
+        {%- when 'model' -%}
+          {{ media | model_viewer_tag: class: 'object-cover w-full h-80' }}
+        {%- else -%}
+          {{ media | media_tag: class: 'object-cover w-full h-80' }}
+      {%- endcase -%}
+    </span>
+    <!-- Selected: "ring-indigo-500", Not Selected: "ring-transparent" -->
+    <span class="ring-transparent absolute inset-0 rounded-medium ring-2 ring-offset-2 pointer-events-none" aria-hidden="true"></span>
+</button>

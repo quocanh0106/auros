@@ -1,0 +1,31 @@
+<div>
+  <div
+    class="max-w-7xl mx-auto py-medium px-4 sm:py-medium sm:px-6 lg:px-8"
+  >
+    <div class="md:flex md:items-center md:justify-between">
+      <h2 class="text-2xl font-extrabold tracking-tight text-headerColor">
+        {{ section.settings.title }}
+      </h2>
+      <a
+        href="{{ section.settings.featured_collection.url }}"
+        class="hidden text-sm font-medium text-secondaryColor hover:text-secondaryColor md:block"
+        >Shop the collection<span aria-hidden="true"> &rarr;</span>
+      </a>
+    </div>
+    <div
+      class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
+    >
+      {%- for product in section.settings.featured_collection.products limit: section.settings.number_of_products_to_show -%} 
+        {%- render 'product-card', product: product -%} 
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %} 
+{ "name": "featured-collection", "settings": [ { "type": "text",
+"id": "title", "default": "Featured Collection", "label": "Title" }, { "type":
+"collection", "id": "featured_collection", "label": "Collection" }, { "type":
+"range", "id": "number_of_products_to_show", "label": "Number of products",
+"min": 3, "max": 12, "default": 3 } ], "presets": [ { "name": "Featured Collection" } ] } 
+{% endschema %}
